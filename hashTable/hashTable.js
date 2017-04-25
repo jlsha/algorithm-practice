@@ -20,50 +20,55 @@ var makeHashTable = function() {
   var result = {};
   var storage = [];
   var storageLimit = 1000;
-
-  result.insert = function(key, value) {
+  result.insert = function(key, val) {
     // TODO: implement `insert()`
-    var index = getIndexBelowMaxForKey(key, storageLimit);
-    if (!this[index]) {
-      this[index] = [[key, value]];
-    } else {
-      // only push if array is less than storageLimit 1000
-
-      if (this[index].length < 1000) {
-        this[index].push([key, value]);
+    var hashIndex = getIndexBelowMaxForKey(key, storageLimit);
+    
+    storage[hashIndex] = storage[hashIndex] || [];
+    var pairs = storage[hashIndex]
+    var replaced = false;
+    
+    for (var i = 0; i < pairs.length; i++) {
+      if (pairs[i][0] === key) {
+        pairs[i][1] = val;
+        replaced = true;
+        break;
       }
     }
-
+    
+    if (!replaced) {
+      pairs.push([key, val]);
+    }
   };
 
   result.retrieve = function(key) {
     // TODO: implement `retrieve()`
-    var index = getIndexBelowMaxForKey(key, storageLimit);
-    if (this[index]) {
-      for (var i = 0; i < this[index].length; i++) {
-        if (this[index][i][0] === key) {
-          return this[index][i][1];
-        }
-      }
+    var hashIndex = getIndexBelowMaxForKey(key, storageLimit);
+    
+    if (!storage[hashIndex]) {
+      return;
     }
+    
+    for (var i = 0; i < storage[hashIndex].length; i++) {
+      if (storage[hashIndex][i] && storage[hashIndex][i][0] === key) {
+        return storage[hashIndex][i][1];
+      }
+    }   
   };
 
   result.remove = function(key) {
     // TODO: implement `remove()`
-    var index = getIndexBelowMaxForKey(key, storageLimit);
-    if (this[index]) {
-      for (var i = 0; i < this[index].length; i++) {
-        if (this[index][i][0] === key) {
-          if (this[index].length === 1) {
-            delete this[index];
-          } else {
-            console.log('this[index]', this[index])
-            this[index].splice(i, 1);
-            break;
-          }
+    var hashIndex = getIndexBelowMaxForKey(key, storageLimit);
+    
+    if (storage[hashIndex].length === 1) {
+      storage[hashIndex] = [];
+    } else {
+      for (var i = 0; i < storage[hashIndex].length; i++) {
+        if (storage[hashIndex][i][0] === key) {
+          delete storage[hashIndex][i];
         }
       }
-    }
+    }   
   };
 
   return result;
