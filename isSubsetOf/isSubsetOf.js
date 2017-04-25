@@ -23,13 +23,29 @@
 
 Array.prototype.isSubsetOf = function (arr) {
   // your code here
-  var subset = this;
-
-  for (var i = 0; i < subset.length; i++) {
-  	if (arr.indexOf(subset[i]) === -1) {
-  		return false;
-  	} else if (i === subset.length - 1) {
-  		return true;
-  	}
+  var subArr = this;
+  
+  var words = {};
+  
+  for (var i = 0; i < arr.length; i++) {
+    if (!words[arr[i]]) {
+      words[arr[i]] = true;
+    }
   }
+  
+  for (var i = 0; i < subArr.length; i++) {
+    if (!words[subArr[i]]) {
+      return false;
+    }
+  }
+  
+  return true;
 };
+
+
+var a = ['commit','push']
+console.log(a.isSubsetOf(['commit','rebase','push','blame'])); // true
+
+var b = ['merge','reset','reset']
+console.log(b.isSubsetOf(['reset','merge','add','commit'])); // true 
+
