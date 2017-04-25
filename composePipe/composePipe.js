@@ -34,7 +34,34 @@
 'use strict';
 
 var compose = function() {
+
+	var args = Array.prototype.slice.call(arguments);
+
+	return function(val) {
+		return args.reduceRight(function(memo, func) {
+			return func(memo);
+		}, val)
+	}
 };
 
+// var greet = function(name) { return 'hi: ' + name; };
+// var exclaim = function(statement) { return statement.toUpperCase() + '!'; };
+// var welcome = compose(greet, exclaim);
+// console.log(welcome('phillip'))
+
+// var first = function(array) { return array[0]; };
+// var shift = function(array) { return array.slice(1); };
+// var fifth = compose(first, shift, shift, shift, shift);
+// console.log(fifth([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+
 var pipe = function() {
+
+  var args = Array.prototype.slice.call(arguments);
+
+  return function(val) {
+    return args.reduce(function(memo, fn) {
+      return fn(memo);
+    }, val);
+  };
 };
+

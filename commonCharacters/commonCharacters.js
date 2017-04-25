@@ -14,23 +14,28 @@
 
 var commonCharacters = function(string1, string2) {
   // TODO: Your code here!
-  var matches = [];
+  var chars = {};
+  var result = [];
 
-  var longer, shorter;
-
-  if (string1.length > string2.length) {
-  	longer = string1.replace(' ','');
-  	shorter = string2.replace(' ','');
-  } else {
-  	longer = string2.replace(' ','');
-  	shorter = string1.replace(' ','');
+  for (var i = 0; i < string2.length; i++) {
+    if (!chars[string2[i]] && string2[i] !== ' ') {
+      chars[string2[i]] = true;
+    }
   }
 
-  for (var i = 0; i < shorter.length; i++) {
-
-  	if (matches.indexOf(shorter[i]) && longer.indexOf(shorter[i]) > -1) {
-  		matches.push(shorter[i]);
-  	}
+  for (var i = 0; i < string1.length; i++) {
+    if (chars[string1[i]]) {
+      result.push(string1[i]);
+      delete chars[string1[i]]
+    }
   }
-  return matches.join('');
+  return result.join('');
 };
+
+console.log(commonCharacters('vicapow', 'wopaciv'));
+console.log(commonCharacters('abc', 'abc'));
+console.log(commonCharacters('ab', 'bc'));
+console.log(commonCharacters('zyx', 'xzy'));
+console.log(commonCharacters('aeiou', 'aaeeiioouu'));
+console.log(commonCharacters('', 'eiauo'));
+console.log(commonCharacters('all boys love fudge', 'boys all love fudge'));
