@@ -45,47 +45,19 @@ var testingTransform = function(array) {
   return transform;
 };
 
-// var insertionSort = function(array, comparator) {
-//   // Your code goes here. Feel free to add helper functions if needed.
-//   if (comparator === undefined) {
-//    comparator = function (value) {
-//     return value;
-//    };
-//   }
-
-//   for (var i = 0; i < array.length; i++) {
-//     for (var j = 1; j < array.length - 1; j++) {
-//       console.log("comparator(array[j].value)", comparator(array[j].value));
-//       console.log("comparator(array[i].value)", comparator(array[i].value));
-//       if (i !== j) {
-//         if (comparator(array[j].value) < comparator(array[i].value)) {
-//           var tempObj= array[i];
-//           console.log("tempObj", tempObj);
-//           array[i] = array[j];
-//           array[j] = tempObj;
-//           console.log("array[i]", array[i]);
-//           console.log("array[j]", array[j]);
-//         }
-//       }
-//     }
-//   }
-//   return array;
-// };
 
 var insertionSort = function(array) {
   // Your code goes here. Feel free to add helper functions if needed.
-  for (var i = 0; i < array.length; i++) {
-    var tempArr = [];
-    tempArr.push(array[i]);
-    for (var j = 0; j < array.length - 1; j++) {
-      tempArr.push(array[j]);
-      tempArr.sort(function(a, b) {
-        return a.value - b.value;
-      });
-      array[i] = tempArr[0];
-      array[j] = tempArr[1];
-
+  for (var i = 1; i < array.length; i++) {
+    var hole = i;
+    var val = array[i];
+    
+    while(hole > 0 && val < array[hole - 1]) {
+      array[hole] = array[hole - 1];
+      hole--;
     }
+    
+    array[hole] = val;
   }
   return array;
 };
