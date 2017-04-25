@@ -26,41 +26,92 @@ var makeHashTable = function() {
   var storageLimit = 4;
   var size = 0;
 
-  result.insert = function(key, value) {
+  var resizing = false;
+  var resize = function(newSize) {
+    // collect all the pairs
+    if (!resizing) {
+      resizing = true;
+      var pairs = [];
+      for (var i = 0; i < storage.length; i++) {
+        if (!storage[i]) { continue; }
+        for (var j = 0; j < storage[i].length; j++) {
+          if (!storage[i][j]) { continue; }
+          pairs.push(storage[i][j]);
+        }
+      }
+      storageLimit = newSize;
+      storage = [];
+      size = 0;
+      for (var i = 0; i < pairs.length; i++) {
+        result.insert(pairs[i][0], pairs[i][1]);
+      }
+      resizing = false;
+    }
+  };
+    
+  result.insert = function(/*...*/  key, value ) {
     // TODO: implement `insert`
-    var index = getIndexBelowMaxForKey(key, storageLimit);
-    if (!this[index]) {
-      this[index] = [[key, value]];
-    } else {
-      this[index].push([key, value]);
-    }
-    this.size++;
-  };
 
-  result.retrieve = function(key) {
+    var index = getIndexBelowMaxForKey(key, storageLimit);
+    storage[index] = storage[index] || [];
+    var pairs = storage[index];
+    var pair;
+    var replaced = false;
+    for (var i = 0; i < pairs.length; i++) {
+      pair = pairs[i];
+      if (pair[0] === key) {
+        pair[1] = value;
+        replaced = true;
+      }
+    }
+
+    if (!replaced) {
+      pairs.push([key, value]);
+      size++;
+    }
+    if (size >= storageLimit * 0.75) {
+      // increase the size of the hash table
+      resize(storageLimit * 2);
+    }
+      };
+
+  result.retrieve = function(/*...*/  key ) {
     // TODO: implement `retrieve`
-    var index = getIndexBelowMaxForKey(key, storageLimit);
-    if (this[index]) {
-      for (var i = 0; i < this[index].length; i++) {
-        if (this[index][i][0] === key) {
-          return this[index][i][1];
-        }
-      }
-    }
-  };
 
-  result.remove = function(key) {
-    // TODO: implement `remove`
     var index = getIndexBelowMaxForKey(key, storageLimit);
-    if (this[index]) {
-      for (var i = 0; i < this[index].length; i++) {
-        if (this[index][i][0] === key) {
-          this[index][i].splice(i, 1);
-          continue;
-        }
+    var pairs = storage[index];
+    if (!pairs) { return; }
+    var pair;
+
+    for (var i = 0; i < pairs.length; i++) {
+      pair = pairs[i];
+      if (pair && pair[0] === key) {
+        return pair[1];
       }
     }
-    this.size--;
-  };
+      };
+
+  result.remove = function(/*...*/  key ) {
+    // TODO: implement `remove`
+
+    var index = getIndexBelowMaxForKey(key, storageLimit);
+    var pairs = storage[index];
+    var pair;
+
+    for (var i = 0; i < pairs.length; i++) {
+      pair = pairs[i];
+      if (pair[0] === key) {
+        var value = pair[1];
+        delete pairs[i];
+        size--;
+        if (size <= storageLimit * 0.25) {
+          // decrease the size of the hash table
+          resize(storageLimit / 2);
+        }
+        return value;
+      }
+    }
+      };
+
   return result;
 };
