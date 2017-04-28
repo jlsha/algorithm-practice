@@ -10,12 +10,15 @@
 
 var largestProductOfThree = function(array) {
   // TODO: everything
-  var sortedArr = array.sort(function(a,b){return a-b});
-  var lastThree = sortedArr.slice(-3);
-	var result = 1;
-	
-  for (var i = 0; i < lastThree.length; i++) {
-  	result *= lastThree[i];
-  }
-  return result;
+  var newArr = array.slice().sort(function(a,b) {
+  	return a - b;
+  })
+  return newArr[newArr.length - 1] * Math.max(newArr[newArr.length - 2] * newArr[newArr.length - 3], newArr[0] * newArr[1]);
+
 };
+
+console.log(largestProductOfThree([0, 2, 3])); //0
+console.log(largestProductOfThree([2, 3, 5])); //30
+console.log(largestProductOfThree([2, 11, 13, 7, 13, 3, 11, 5])) //1859
+console.log(largestProductOfThree([2, 3, -11, 7, 5, -13])) //1001
+console.log(largestProductOfThree([-31, 41, 34, -37, -17, 29])) //47027
