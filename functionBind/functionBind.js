@@ -3,17 +3,7 @@
  *
  * example 1:
  *
- * var alice = {
- *   name: 'alice',
- *   shout: function(){
- *     alert(this.name);
- *   }
- * }
 
- * var boundShout = bind(alice.shout, alice);
- * boundShout(); // alerts 'alice'
- * boundShout = bind(alice.shout, {name: 'bob'});
- * boundShout(); // alerts 'bob'
  *
  * example 2:
  *
@@ -24,18 +14,32 @@
  *
 */
 
-var bind = function(cb, obj) {
+var bind = function(func, context) {
   // TODO: Your code here
-
-  var previousArgs = Array.prototype.slice.call(arguments, 2);
-  // console.log('previousArgs: ', previousArgs);
-
+  var args = Array.prototype.slice.call(arguments, 2);
+  
   return function() {
-    var args = Array.prototype.slice.call(arguments);
-    args = previousArgs.concat(args);
-    return cb.apply(obj, args);
-  };
+    var newArgs = args.concat(Array.prototype.slice.call(arguments));
+    return func.apply(context, newArgs); 
+  }
+  
 };
+
+ var alice = {
+   name: 'alice',
+   shout: function(){
+     console.log(this.name);
+ }
+}
+var boundShout = bind(alice.shout, alice);
+boundShout(); // 'alice'
+boundShout = bind(alice.shout, {name: 'bob'});
+boundShout(); // 'bob'
+
+var func = function(a, b){ return a + b };
+var boundFunc = bind(func, null, 'foo');
+var result = boundFunc('bar');
+console.log(result); // 'foobar'
 
 /*
  * Function.prototype.bind:
@@ -62,15 +66,30 @@ var bind = function(cb, obj) {
  *
 */
 
-Function.prototype.bind = function(obj) {
+Function.prototype.bind = function(context) {
   // TODO: Your code here
-  var previousArgs = Array.prototype.slice.call(arguments, 1);
+  var args = Array.prototype.slice.call(arguments, 1);
   var func = this;
-
+  
   return function() {
-    var args = Array.prototype.slice.call(arguments);
-    args = previousArgs.concat(args);
-
-    return func.apply(obj, args);
-  };
+    var newArgs = args.concat(Array.prototype.slice.call(arguments));
+    return func.apply(context, newArgs);
+  }
 };
+
+
+var alice = {
+  name: 'alice',
+  shout: function(){
+    console.log(this.name);
+  }
+}
+var boundShout = alice.shout.bind(alice);
+boundShout(); // 'alice'
+boundShout = alice.shout.bind({name: 'bob'});
+boundShout(); // 'bob'
+
+var func = function(a, b){ return a + b };
+var boundFunc = func.bind(null, 'foo');
+var result = boundFunc('bar');
+console.log(result); // 'foobar'
