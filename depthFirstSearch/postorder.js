@@ -4,39 +4,21 @@ var Tree = function(val) {
     this.right = null;
 }
 
-function preorder (tree) {
+function postorder (tree) {
     var results = [];
 
     var findNext = function (node) {
-        results.push(node.value);
         if (node.left) {
             findNext(node.left);
-        } 
+        }
         if (node.right) {
             findNext(node.right);
         }
-
+        results.push(node.value);
     }
     findNext(tree);
     return results;
 }
-
-var one = new Tree(1);
-var two = new Tree(2);
-var three = new Tree(3);
-var four = new Tree(4);
-var five = new Tree(5);
-var six = new Tree(6);
-var seven = new Tree(7);
-
-one.left = two;
-two.left = three;
-two.right = four;
-four.left = five;
-one.right = six;
-six.right = seven;
-
-preorder(one);
 
 var a = new Tree('a');
 var b = new Tree('b');
@@ -63,4 +45,21 @@ g.left = h;
 h.right = j;
 j.left = i;
 
-preorder(f);
+console.log(postorder(f));
+
+var one = new Tree(1);
+var two = new Tree(2);
+var three = new Tree(3);
+var four = new Tree(4);
+var five = new Tree(5);
+var six = new Tree(6);
+var seven = new Tree(7);
+
+seven.left = four;
+seven.right = six;
+four.left = one;
+four.right = three;
+three.left = two;
+six.right = five;
+
+console.log(postorder(seven));
