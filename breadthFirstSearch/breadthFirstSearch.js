@@ -5,26 +5,20 @@ var Tree = function(val) {
 }
 
 function bfs (tree) {
-    var result = [];
-    var queue = [tree.value];
+    var result = [tree.value];
+
 
     var findChild = function (node) {
         if (node.left) {
-            queue.push(node.left.value)
+            result.push(node.left.value)
         }
         if (node.right) {
-            queue.push(node.right.value);
-        }
-        debugger;
-        while (queue.length > 0) {
-            result.push(queue.shift());
+            result.push(node.right.value);
         }
         if (node.left) {
-            debugger;
             findChild(node.left);
         }
         if (node.right) {
-            debugger;
             findChild(node.right);
         }
     }
